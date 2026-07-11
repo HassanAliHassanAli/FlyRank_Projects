@@ -1,0 +1,26 @@
+services:
+  db:
+    image: postgres:15
+    container_name: flyrank_postgres
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  app:
+    build: .
+    container_name: flyrank_app
+    restart: always
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+
+volumes:
+  pgdata:
